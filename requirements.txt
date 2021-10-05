@@ -1,0 +1,11 @@
+Flask>=2.0.1
+Flask-Limiter>=1.0.1
+Jinja2>=3.0.1
+PyYAML>=5.1
+whitenoise>=5.0.0
+elasticsearch>=7.10.0
+datetime
+urllib3>=1.26
+dnspython>=2.0.0
+geoip2>=4.0.0
+gunicorn

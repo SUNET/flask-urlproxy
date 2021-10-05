@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>URL Protection - {{title}}</title>
+    <style>
+        .bottom-border-red {
+            border-bottom: 4px solid #D3452E;
+            height: 90px;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex flex-column">
+        <nav class="navbar navbar-expand-md navbar-light bottom-border-red">
+            <span class="navbar-brand-logo navbar-brand ps-3"><img src="https://halon-eu.sunet.se/public/sunetlogo.png" alt="sunet logo" height="60" class="d-inline-block align-text-middle"></span>
+            <span class="text-truncate navbar-brand">URL Protection</span>
+            <div class="collapse navbar-collapse flex-grow-1 text-right" id="navbarText">
+                 <ul class="navbar-nav me-auto flex-nowrap">
+                      <li class="nav-item m-2 float-right">
+                      <a class="navbar-text align-text-left">Recieved: {{ date }}</a>
+                      </li>
+                      <li class="nav-item m-2 float-right">
+                      <a class="navbar-text align-text-left">Recipient: {{ user }}</a>
+                      </li>
+                 </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="d-flex flex-column">
+        <h4 class="pt-3 m-3">URLProxy</h4>
+    </div>
+    <div class="alert alert-danger m-3" role="alert">
+         MessageId: {{ msgid }} contains one or more links that are suspicious
+    </div>
+    <div class="bg-light d-flex justify-content-center align-items-center" data-react-helmet="class">
+
+        <div class="card d-flex flex-column justify-content-center m-3">
+        <h5 class="pt-3 m-4 justify-content-center">Information about URL found in the email</h5>
+             <table>
+                  <tbody>
+                       <tr><td><a class="m-4">URL </td><td><a class="m-4"> {{ url }} </tb></tr>
+                       <tr><td><a class="m-4">Fully qualified domain name </td><td><a class="m-4"> {{ fqdn }} </tb></tr>
+                       <tr><td><a class="m-4">Resolved server address </td><td><a class="m-4"> {{ ipv4 }} </tb></tr>
+                       <tr><td><a class="m-4">Country </td><td><a class="m-4"> {{ country }} </tb></tr>
+                       <tr><td><a class="m-4">City </td><td><a class="m-4"> {{ city }} </tb></tr>
+                       <tr><td><a class="m-4">AS number </td><td><a class="m-4"> {{ asn }} </tb></tr>
+                       <tr><td><a class="m-4">AS Org Name </td><td><a class="m-4"> {{ asnname }} </tb></tr>
+                  </tbody>
+             </table>
+        <h5 class="pt-3 m-4 justify-content-center"></h5>
+        </div> 
+        <div class="card d-flex justify-content-center m-3">
+        <h5 class="pt-3 m-4 justify-content-center">Information about the Sender of the email</h5>
+             <table>
+                  <tbody>
+                       <tr><td><a class="m-4">Sender Address </td><td><a class="m-4"> {{ sender }} </tb></tr>
+                       <tr><td><a class="m-4">Remote MTA IP Address</td><td><a class="m-4"> {{ senderip }} </tb></tr>
+                       <tr><td><a class="m-4">Remote MTA reverse domain name </td><td><a class="m-4"> {{ ptr }} </tb></tr>
+                       <tr><td><a class="m-4">Country </td><td><a class="m-4"> {{ scountry }} </tb></tr>
+                       <tr><td><a class="m-4">City </td><td><a class="m-4"> {{ scity }} </tb></tr>
+                       <tr><td><a class="m-4">AS number </td><td><a class="m-4"> {{ sasn }} </tb></tr>
+                       <tr><td><a class="m-4">AS Org Name </td><td><a class="m-4"> {{ sasnname }} </tb></tr>
+                  </tbody>
+             </table>
+        <h5 class="pt-3 m-4 justify-content-center"></h5>
+        </div>
+    </div>
+    <div class="alert alert-warning m-3" role="alert">
+         If you think this URL is incorrect classified as suspicious, please contact with your local IT-support @ {{ owner }}
+    </div>
+</body>
+</html>
