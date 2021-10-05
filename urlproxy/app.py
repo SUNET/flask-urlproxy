@@ -57,7 +57,7 @@ def urlproxy():
     else:
         url = urllib.parse.unquote(rfc3986url)
         fqdn = urllib.parse.urlparse(url).netloc
-        date = datetime.utcfromtimestamp(int(tss)).strftime('%Y-%m-%d %H:%M:%S')
+        date = datetime.utcfromtimestamp(int(tss)).strftime('%Y-%m-%d %H:%M:%S UTC')
         u_country = ''
         u_city = ''
         u_asn = ''
