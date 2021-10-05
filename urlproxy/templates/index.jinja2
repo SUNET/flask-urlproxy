@@ -13,27 +13,30 @@
     </style>
 </head>
 <body>
-    <div class="d-flex flex-column">
-        <nav class="navbar navbar-expand-md navbar-light bottom-border-red">
-            <span class="navbar-brand-logo navbar-brand ps-3"><img src="https://halon-eu.sunet.se/public/sunetlogo.png" alt="sunet logo" height="60" class="d-inline-block align-text-middle"></span>
-            <span class="text-truncate navbar-brand">URL Protection</span>
-            <div class="collapse navbar-collapse flex-grow-1 text-right" id="navbarText">
-                 <ul class="navbar-nav me-auto flex-nowrap">
-                      <li class="nav-item m-2 float-right">
-                      <a class="navbar-text align-text-left">Recieved: {{ date }}</a>
+    <nav class="navbar navbar-expand-lg navbar-light bottom-border-red">
+         <div class="container-fluid">
+             <span class="navbar-brand-logo navbar-brand ps-3"><img src="https://halon-eu.sunet.se/public/sunetlogo.png" alt="sunet logo" height="60" class="d-inline-block align-text-middle"></span>
+             <span class="text-truncate navbar-brand">URL Protection</span>
+             <div class="collapse navbar-collapse justify-content-end" id="navbarText">
+                 <ul class="nav justify-content-end">
+                      <li class="nav-item m-2">
+                      <a class="navbar-text">Recieved: {{ date }}</a>
                       </li>
-                      <li class="nav-item m-2 float-right">
-                      <a class="navbar-text align-text-left">Recipient: {{ user }}</a>
+                      <li class="nav-item m-2">
+                      <a class="navbar-text">Recipient: {{ user }}</a>
                       </li>
                  </ul>
-            </div>
-        </nav>
-    </div>
+             </div>
+         </div>
+    </nav>
     <div class="d-flex flex-column">
         <h4 class="pt-3 m-3">URLProxy</h4>
     </div>
     <div class="alert alert-danger m-3" role="alert">
          MessageId: {{ msgid }} contains one or more links that are suspicious
+    </div>
+    <div class="alert alert-warning m-3" role="alert">
+         If the link you are about to follow asks you for sensitive information such as <i>passwords, account details, credit-card number, banking details etc.</i>, <b>do not provide it!</b> Instead, hand-enter the appropriate Web site address in your browsers address bar to ensure you are navigating to a legitimate site.
     </div>
     <div class="bg-light d-flex justify-content-center align-items-center" data-react-helmet="class">
 
@@ -68,8 +71,8 @@
         <h5 class="pt-3 m-4 justify-content-center"></h5>
         </div>
     </div>
-    <div class="alert alert-warning m-3" role="alert">
-         If you think this URL is incorrect classified as suspicious, please contact with your local IT-support @ {{ owner }}
+    <div class="alert alert-light m-3" role="alert">
+         If you think this URL is <i>incorrectly</i> classified as suspicious, please contact <b><i>your local IT-support</i></b> that manages {{ owner }}
     </div>
 </body>
 </html>
