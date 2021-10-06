@@ -2,19 +2,19 @@
 __author__ = 'pettai'
 
 import sys
+import urllib
+from datetime import datetime
 from os import environ
+from pprint import pprint
 
-from flask import Flask, render_template, request, send_from_directory
+import dns.resolver
+import geoip2.database
+import yaml
+from elasticsearch import Elasticsearch
+from flask import Flask, render_template, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from whitenoise import WhiteNoise
-from elasticsearch import Elasticsearch
-from datetime import datetime
-from pprint import pprint
-import yaml
-import urllib
-import dns.resolver
-import geoip2.database
 
 # Read config
 config_path = environ.get('URLPROXY_CONFIG', 'config.yaml')
@@ -36,10 +36,11 @@ app.logger.setLevel(app.config['LOG_LEVEL'])
 app.logger.info('Setting loglevel to %s', config.get('LOG_LEVEL'))
 
 # Init static files
-app.wsgi_app = WhiteNoise(app.wsgi_app, root=config.get('STATIC_FILES', 'urlproxy/static/'))
+app.wsgi_app = WhiteNoise(app.wsgi_app, root=config.get('STATIC_FILES', 'urlproxy/static/'))  # type: ignore
 
 # Init rate limiting
 limiter = Limiter(app, key_func=get_remote_address)
+
 
 def rate_limit_from_config():
     return app.config.get('REQUEST_RATE_LIMIT', '1/second')
@@ -71,10 +72,16 @@ def urlproxy():
         senderip = ''
         ownerdomain = ''
         try:
-            es = Elasticsearch(config.get('ES_ENDPOINT'), use_ssl=True, verify_certs=config.get('ES_VERIFYCERT'), ssl_show_warn=False)
+            es = Elasticsearch(
+                config.get('ES_ENDPOINT'), use_ssl=True, verify_certs=config.get('ES_VERIFYCERT'), ssl_show_warn=False
+            )
             querystring = f"messageid: {msgid}".format(msgid)
-            body = {'query': {'query_string': {'query': querystring }}, 'fields': [ 'sender', 'senderip', 'ownerdomain' ], '_source': 'false'}
-            response = es.search(body,index='halonlog-*')
+            body = {
+                'query': {'query_string': {'query': querystring}},
+                'fields': ['sender', 'senderip', 'ownerdomain'],
+                '_source': 'false',
+            }
+            response = es.search(body, index='halonlog-*')
             app.logger.debug('response %s', (pprint(response)))
             if response['hits']['total']['value'] >= 1:
                 for doc in response['hits']['hits']:
@@ -86,7 +93,7 @@ def urlproxy():
                         s_country = response.country.name
                         s_city = response.city.name
                     with geoip2.database.Reader('/opt/flask-urlproxy/data/GeoLite2-ASN.mmdb') as reader:
-                        response = reader.asn(senderip) 
+                        response = reader.asn(senderip)
                         s_asn = response.autonomous_system_number
                         s_asnname = response.autonomous_system_organization
                 try:
@@ -109,7 +116,7 @@ def urlproxy():
                             u_country = response.country.name
                             u_city = response.city.name
                         with geoip2.database.Reader('/opt/flask-urlproxy/data/GeoLite2-ASN.mmdb') as reader:
-                            response = reader.asn(ipv4) 
+                            response = reader.asn(ipv4)
                             u_asn = response.autonomous_system_number
                             u_asnname = response.autonomous_system_organization
                 except dns.resolver.NXDOMAIN:
@@ -118,11 +125,31 @@ def urlproxy():
                 except dns.exception.DNSException:
                     ipv4 = 'SERVFAIL'
                     app.logger.debug('%s generated SERVFAIL', fqdn)
-                return render_template('index.jinja2', title='Halon', url=(url), fqdn=(fqdn), ipv4=(ipv4), country=(u_country), city=(u_city), asn=(u_asn), asnname=(u_asnname), user=(user), date=(date), msgid=(msgid), sender=(sender), senderip=(senderip), ptr=(ptr), scountry=(s_country), scity=(s_city), sasn=(s_asn), sasnname=(s_asnname), owner=(ownerdomain))
+                return render_template(
+                    'index.jinja2',
+                    title='Halon',
+                    url=(url),
+                    fqdn=(fqdn),
+                    ipv4=(ipv4),
+                    country=(u_country),
+                    city=(u_city),
+                    asn=(u_asn),
+                    asnname=(u_asnname),
+                    user=(user),
+                    date=(date),
+                    msgid=(msgid),
+                    sender=(sender),
+                    senderip=(senderip),
+                    ptr=(ptr),
+                    scountry=(s_country),
+                    scity=(s_city),
+                    sasn=(s_asn),
+                    sasnname=(s_asnname),
+                    owner=(ownerdomain),
+                )
 
             else:
                 return render_template('index.html', title='No Data')
-                
+
         except elasticsearch.exceptions.ConnectionError:
             app.logger.debug('Elasticsearch ConnectionError: ES offline?')
-
