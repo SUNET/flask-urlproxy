@@ -20,7 +20,7 @@
              <div class="collapse navbar-collapse justify-content-end" id="navbarText">
                  <ul class="nav justify-content-end">
                       <li class="nav-item m-2">
-                      <a class="navbar-text">Recieved: {{ date }} </a>
+                      <a class="navbar-text">Recieved: {{ date.strftime('%Y-%m-%d %H:%M:%S UTC') }} </a>
                       </li>
                       <li class="nav-item m-2">
                       <a class="navbar-text">Recipient: {{ user }}</a>
