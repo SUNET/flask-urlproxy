@@ -1,0 +1,4 @@
+-r test_requirements.in
+ipython
+black
+isort

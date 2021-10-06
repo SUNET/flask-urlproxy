@@ -1,0 +1,8 @@
+-r requirements.in
+-c requirements.txt
+pytest
+pytest-cov
+mypy
+# type stubs for mypy
+types-PyYAML
+types-pkg_resources
