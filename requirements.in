@@ -1,0 +1,9 @@
+Flask
+Flask-Limiter
+Jinja2
+PyYAML
+whitenoise
+elasticsearch
+dnspython
+geoip2
+gunicorn
