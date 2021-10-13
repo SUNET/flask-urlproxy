@@ -14,7 +14,7 @@ import elasticsearch
 import geoip2.database
 import yaml
 from elasticsearch import Elasticsearch
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from whitenoise import WhiteNoise
@@ -62,8 +62,9 @@ def rate_limit_from_config():
 
 @dataclass
 class URLProxyContext:
-    user: Optional[str]
     url: str
+    user: Optional[str]
+    msgid: str
     fqdn: str
     date: Optional[datetime]
     u_country: str = ''
@@ -94,7 +95,7 @@ def urlproxy() -> str:
 
     url = url_parse.unquote(rfc3986url)
     context = URLProxyContext(
-        user=user, url=url, fqdn=url_parse.urlparse(url).netloc, date=datetime.utcfromtimestamp(int(tss))
+        url=url, user=user, msgid=msgid, fqdn=url_parse.urlparse(url).netloc, date=datetime.utcfromtimestamp(int(tss))
     )
     try:
         es = Elasticsearch(
@@ -112,44 +113,42 @@ def urlproxy() -> str:
         app.logger.error('Elasticsearch ConnectionError: ES offline?')
         return render_template('index.html', title='No Data')
 
-    senderip = None
-    if response['hits']['total']['value'] >= 1:
+    if response['hits']['total']['value'] == 1:
         for doc in response['hits']['hits']:
             context.sender = doc["fields"]["sender"][0]
-            senderip = doc["fields"]["senderip"][0]
+            context.senderip = doc["fields"]["senderip"][0]
             context.ownerdomain = doc["fields"]["ownerdomain"][0]
             # check city db
-            city_response = app.city_db.city(senderip)
+            city_response = app.city_db.city(context.senderip)
             context.s_country = city_response.country.name
             context.s_city = city_response.city.name
             # check asn db
-            asn_response = app.asn_db.asn(senderip)
+            asn_response = app.asn_db.asn(context.senderip)
             context.s_asn = asn_response.autonomous_system_number
             context.s_asnname = asn_response.autonomous_system_organization
 
-        # TODO: Should things below here only run for the last hit from elastic if there are multiple?
-        if senderip is not None:
+        if context.senderip:
             try:
-                answers = dns.resolver.resolve_address(senderip)
+                answers = dns.resolver.resolve_address(context.senderip)
                 for answer in answers:
                     context.ptr = answer.to_text()
             except dns.resolver.NXDOMAIN:
                 context.ptr = 'NXDOMAIN'
-                app.logger.debug('%s generated NXDOMAIN', senderip)
+                app.logger.debug('%s generated NXDOMAIN', context.senderip)
             except dns.exception.DNSException:
                 context.ptr = 'SERVFAIL'
-                app.logger.debug('%s generated SERVFAIL', senderip)
+                app.logger.debug('%s generated SERVFAIL', context.senderip)
 
         try:
             answers = dns.resolver.resolve(context.fqdn, 'A')
             for answer in answers:
-                ipv4 = answer.to_text()
+                context.ipv4 = answer.to_text()
                 # check city db
-                city_response = app.city_db.city(ipv4)
+                city_response = app.city_db.city(context.ipv4)
                 context.u_country = city_response.country.name
                 context.u_city = city_response.city.name
                 # check asn db
-                asn_response = app.asn_db.asn(ipv4)
+                asn_response = app.asn_db.asn(context.ipv4)
                 context.u_asn = asn_response.autonomous_system_number
                 context.u_asnname = asn_response.autonomous_system_organization
         except dns.resolver.NXDOMAIN:
@@ -160,3 +159,30 @@ def urlproxy() -> str:
             app.logger.debug('%s generated SERVFAIL', context.fqdn)
         return render_template('index.jinja2', title='Halon', **asdict(context))
     return render_template('index.html', title='No Data')
+
+@app.route('/<string:msgid>', methods=['POST'])
+@limiter.limit(rate_limit_from_config)
+def continue_to_url(msgid) -> str:
+    rfc3986url = request.form.get('url')
+    app.logger.debug(request.form)
+    if not rfc3986url or not msgid:
+        return render_template('index.html', title='No Data')
+
+    try:
+        es = Elasticsearch(
+            config.get('ES_ENDPOINT'), use_ssl=True, verify_certs=config.get('ES_VERIFYCERT'), ssl_show_warn=False
+        )
+        querystring = f"messageid: {msgid}"
+        body = {
+            'query': {'query_string': {'query': querystring}},
+            'fields': ['messageid'],
+            '_source': 'false',
+        }
+        response = es.search(body=body, index='halonlog-*')
+        app.logger.debug(f'response {pformat(response)}')
+    except elasticsearch.exceptions.ConnectionError:
+        app.logger.error('Elasticsearch ConnectionError: ES offline?')
+        return render_template('index.html', title='No Data')
+
+    if response['hits']['total']['value'] == 1:
+        return redirect(rfc3986url)

@@ -33,7 +33,7 @@
         <h4 class="pt-3 m-3">URLProxy</h4>
     </div>
     <div class="alert alert-danger m-3" role="alert">
-         MessageId: {{ msgid }} contains one or more links that are suspicious
+         MessageId: {{ msgid }} contains one or more links that has been classified as suspicious
     </div>
     <div class="alert alert-warning m-3" role="alert">
          If the link you are about to follow asks you for sensitive information such as <i>passwords, account details, credit-card number, banking details etc.</i>, <b>do not provide it!</b> Instead, hand-enter the appropriate Web site address in your browsers address bar to ensure you are navigating to a legitimate site.
@@ -42,37 +42,41 @@
 
         <div class="card d-flex flex-column justify-content-center m-3">
         <h5 class="pt-3 m-4 justify-content-center">Information about URL found in the email</h5>
-             <table>
+             <table class="table">
                   <tbody>
                        <tr><td class="m-4">URL</td><td class="m-4">{{ url }}</td></tr>
                        <tr><td class="m-4">Fully qualified domain name</td><td class="m-4">{{ fqdn }}</td></tr>
                        <tr><td class="m-4">Resolved server address</td><td class="m-4">{{ ipv4 }}</td></tr>
-                       <tr><td class="m-4">Country</td><td class="m-4">{{ country }}</td></tr>
-                       <tr><td class="m-4">City</td><td class="m-4">{{ city }}</td></tr>
-                       <tr><td class="m-4">AS number</td><td class="m-4">{{ asn }}</td></tr>
-                       <tr><td class="m-4">AS Org Name</td><td class="m-4">{{ asnname }}</td></tr>
+                       <tr><td class="m-4">Country</td><td class="m-4">{{ u_country }}</td></tr>
+                       <tr><td class="m-4">City</td><td class="m-4">{{ u_city }}</td></tr>
+                       <tr><td class="m-4">AS number</td><td class="m-4">{{ u_asn }}</td></tr>
+                       <tr><td class="m-4">AS Org Name</td><td class="m-4">{{ u_asnname }}</td></tr>
                   </tbody>
              </table>
-        <h5 class="pt-3 m-4 justify-content-center"></h5>
         </div>
         <div class="card d-flex justify-content-center m-3">
         <h5 class="pt-3 m-4 justify-content-center">Information about the Sender of the email</h5>
-             <table>
+             <table class="table">
                   <tbody>
                        <tr><td class="m-4">Sender Address</td><td class="m-4">{{ sender }}</td></tr>
                        <tr><td class="m-4">Remote MTA IP Address</td><td class="m-4">{{ senderip }}</td></tr>
                        <tr><td class="m-4">Remote MTA reverse domain name</td><td class="m-4">{{ ptr }}</td></tr>
-                       <tr><td class="m-4">Country</td><td class="m-4">{{ scountry }}</td></tr>
-                       <tr><td class="m-4">City</td><td class="m-4">{{ scity }}</td></tr>
-                       <tr><td class="m-4">AS number</td><td class="m-4">{{ sasn }}</td></tr>
-                       <tr><td class="m-4">AS Org Name</td><td class="m-4">{{ sasnname }}</td></tr>
+                       <tr><td class="m-4">Country</td><td class="m-4">{{ s_country }}</td></tr>
+                       <tr><td class="m-4">City</td><td class="m-4">{{ s_city }}</td></tr>
+                       <tr><td class="m-4">AS number</td><td class="m-4">{{ s_asn }}</td></tr>
+                       <tr><td class="m-4">AS Org Name</td><td class="m-4">{{ s_asnname }}</td></tr>
                   </tbody>
              </table>
-        <h5 class="pt-3 m-4 justify-content-center"></h5>
         </div>
     </div>
+    <div class="d-flex justify-content-center">
+         <form method="post" action="{{ url_for('continue_to_url', msgid=msgid) }}">
+            <input type="hidden" name="url" value="{{ url }}"/>
+            <button type="submit" class="btn btn-warning">Continue to <b>{{ url }}</b> anyway?</button>
+        </form>
+    </div>
     <div class="alert alert-light m-3" role="alert">
-         If you think this URL is <i>incorrectly</i> classified as suspicious, please contact <b><i>your local IT-support</i></b> that manages {{ owner }}
+         If you think this URL <i>incorrectly</i> has classified as suspicious, please contact <b><i>your local IT-support</i></b> that manages {{ ownerdomain }}
     </div>
 </body>
 </html>
