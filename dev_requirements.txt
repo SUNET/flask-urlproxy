@@ -4,9 +4,6 @@
 #
 #    make update_deps
 #
---index-url https://pypi.sunet.se
---extra-index-url https://pypi.sunet.se/simple
-
 aiohttp==3.7.4.post0 \
     --hash=sha256:493d3299ebe5f5a7c66b9819eacdcfbbaaf1a8e84911ddffcdc48888497afecf \
     --hash=sha256:79ebfc238612123a713a457d92afb4096e2148be17df6c50fb9bf7a81c2f8013
@@ -80,12 +77,6 @@ elasticsearch==7.15.0 \
     # via
     #   -c requirements.txt
     #   -r requirements.in
-flask-limiter==1.4 \
-    --hash=sha256:021279c905a1e24f181377ab3be711be7541734b494f4e6db2b8edeba7601e48 \
-    --hash=sha256:f8a65a7874f48ff8df2ea5e86d5b85b48fcbae065ebeb5271b317fe68fcfa979
-    # via
-    #   -c requirements.txt
-    #   -r requirements.in
 flask==2.0.2 \
     --hash=sha256:7b2fb8e934ddd50731893bdcdb00fc8c0315916f9fcd50d22c7cc1a95ab634e2 \
     --hash=sha256:cb90f62f1d8e4dc4621f52106613488b5ba826b2e1e10a33eac92f723093ab6a
@@ -93,6 +84,12 @@ flask==2.0.2 \
     #   -c requirements.txt
     #   -r requirements.in
     #   flask-limiter
+flask-limiter==1.4 \
+    --hash=sha256:021279c905a1e24f181377ab3be711be7541734b494f4e6db2b8edeba7601e48 \
+    --hash=sha256:f8a65a7874f48ff8df2ea5e86d5b85b48fcbae065ebeb5271b317fe68fcfa979
+    # via
+    #   -c requirements.txt
+    #   -r requirements.in
 geoip2==4.4.0 \
     --hash=sha256:f150bed3190d543712a17467208388d31bd8ddb49b2226fba53db8aaedb8ba89 \
     --hash=sha256:f9172cdfb2a5f9225ace5e30dd7426413ad28798a5f474cd1538780686bd6a87
@@ -171,18 +168,18 @@ multidict==5.2.0 \
     #   -c requirements.txt
     #   aiohttp
     #   yarl
-mypy-extensions==0.4.3 \
-    --hash=sha256:090fedd75945a69ae91ce1303b5824f428daf5a028d2f6ab8a299250a846f15d \
-    --hash=sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8
-    # via
-    #   black
-    #   mypy
 mypy==0.910 \
     --hash=sha256:119bed3832d961f3a880787bf621634ba042cb8dc850a7429f643508eeac97b9 \
     --hash=sha256:704098302473cb31a218f1775a873b376b30b4c18229421e9e9dc8916fd16150 \
     --hash=sha256:866c41f28cee548475f146aa4d39a51cf3b6a84246969f3759cb3e9c742fc072 \
     --hash=sha256:ef565033fa5a958e62796867b1df10c40263ea9ded87164d67572834e57a174d
     # via -r test_requirements.in
+mypy-extensions==0.4.3 \
+    --hash=sha256:090fedd75945a69ae91ce1303b5824f428daf5a028d2f6ab8a299250a846f15d \
+    --hash=sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8
+    # via
+    #   black
+    #   mypy
 packaging==21.0 \
     --hash=sha256:7dc96269f53a4ccec5c0670940a4281106dd0bb343f47b7471f779df49c2fbe7 \
     --hash=sha256:c86254f9220d55e31cc94d69bade760f0847da8000def4dfe1c6b872fd14ff14
@@ -231,16 +228,16 @@ pyparsing==2.4.7 \
     --hash=sha256:c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1 \
     --hash=sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b
     # via packaging
-pytest-cov==3.0.0 \
-    --hash=sha256:578d5d15ac4a25e5f961c938b85a05b09fdaae9deef3bb6de9a6e766622ca7a6 \
-    --hash=sha256:e7f0f5b1617d2210a2cabc266dfe2f4c75a8d32fb89eafb7ad9d06f6d076d470
-    # via -r test_requirements.in
 pytest==6.2.5 \
     --hash=sha256:131b36680866a76e6781d13f101efb86cf674ebb9762eb70d3082b6f29889e89 \
     --hash=sha256:7310f8d27bc79ced999e760ca304d69f6ba6c6649c0b60fb0e04a4a77cacc134
     # via
     #   -r test_requirements.in
     #   pytest-cov
+pytest-cov==3.0.0 \
+    --hash=sha256:578d5d15ac4a25e5f961c938b85a05b09fdaae9deef3bb6de9a6e766622ca7a6 \
+    --hash=sha256:e7f0f5b1617d2210a2cabc266dfe2f4c75a8d32fb89eafb7ad9d06f6d076d470
+    # via -r test_requirements.in
 pyyaml==5.4.1 \
     --hash=sha256:08682f6b72c722394747bddaf0aa62277e02557c0fd1c42cb853016a38f8dedf \
     --hash=sha256:0f5f5786c0e09baddcd8b4b45f20a7b5d61a7e7e99846e3c799b05c7c53fa696 \
@@ -326,9 +323,9 @@ typing-extensions==3.10.0.2 \
     #   aiohttp
     #   black
     #   mypy
-urllib3==1.26.7 \
-    --hash=sha256:4987c65554f7a2dbf30c18fd48778ef124af6fab771a377103da0585e2336ece \
-    --hash=sha256:c4fdf4019605b6e5423637e01bc9fe4daef873709a7973e195ceba0a62bbc844
+urllib3==1.26.18 \
+    --hash=sha256:34b97092d7e0a3a8cf7cd10e386f401b3737364026c45e622aa02903dffe0f07 \
+    --hash=sha256:f8ecc1bba5667413457c529ab955bf8c67b45db799d159066261719e328580a0
     # via
     #   -c requirements.txt
     #   elasticsearch
@@ -358,5 +355,6 @@ yarl==1.6.3 \
     #   aiohttp
 
 # WARNING: The following packages were not pinned, but pip requires them to be
-# pinned when the requirements file includes hashes. Consider using the --allow-unsafe flag.
+# pinned when the requirements file includes hashes and the requirement is not
+# satisfied by a package already installed. Consider using the --allow-unsafe flag.
 # setuptools
